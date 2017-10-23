@@ -1,9 +1,15 @@
 import pandas as pd
 import numpy as np
+import os, sys, math, io
 
 from keras.preprocessing.image import Iterator
 from keras.preprocessing.image import ImageDataGenerator
 from keras import backend as K
+import bson
+
+import keras
+from keras.preprocessing.image import load_img, img_to_array
+import tensorflow as tf
 
 # Because the training and validation generators read from the same BSON file, they need to use the same lock to protect it.
 import threading
@@ -73,29 +79,3 @@ class BSONIterator(Iterator):
             index_array = next(self.index_generator)
         return self._get_batches_of_transformed_samples(index_array)
 
-
-METADATA_DIR = 'metadata'
-DATA_DIR = '../../dataset'
-
-train_offsets_df = pd.read_csv(os.path.join(METADATA_DIR,"train_offsets.csv"), index_col=0)
-train_images_df = pd.read_csv(os.path.join(METADATA_DIR,"train_images.csv"), index_col=0)
-val_images_df = pd.read_csv(os.path.join(METADATA_DIR,"val_images.csv"), index_col=0)
-
-num_classes = 5270
-num_train_images = len(train_images_df)
-num_val_images = len(val_images_df)
-batch_size = 128
-
-# Create a generator for training and a generator for validation.
-# Tip: use ImageDataGenerator for data augmentation and preprocessing.
-assert os.path.exists(os.path.join(DATA_DIR, train.bson))
-train_bson_file = open(os.path.join(DATA_DIR, train.bson), "rb")
-train_datagen = ImageDataGenerator()
-train_gen = BSONIterator(train_bson_file, train_images_df, train_offsets_df, 
-                         num_classes, train_datagen, lock,
-                         batch_size=batch_size, shuffle=True)
-
-val_datagen = ImageDataGenerator()
-val_gen = BSONIterator(train_bson_file, val_images_df, train_offsets_df,
-                       num_classes, val_datagen, lock,
-                       batch_size=batch_size, shuffle=True)
