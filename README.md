@@ -23,6 +23,7 @@ This README would normally document whatever steps are necessary to get your app
 | --- | --- | --- | --- | --- | --- |
 | Inception V3 | Change top layer only | 5 | 10% random data with 80-20% val split | 0.388 | 0.371 |
 | Inception V3 | Finetune with 2 top 2 inception blocks | 5 | 10% random data with 80-20% val split | 0.479 | 0.429 |
+| Inception V3 | Full Retrain | 10 | 10% random data with 80-20% val split | 0.633 | 0.516 |
 
 
 * Writing tests
