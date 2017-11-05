@@ -3,3 +3,4 @@ metadata/
 *.swp
 saved_models/
 *.pyc
+logs/
