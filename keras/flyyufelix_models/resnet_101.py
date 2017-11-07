@@ -2,7 +2,7 @@
 
 from keras.models import Sequential
 from keras.optimizers import SGD
-from keras.layers import Input, Dense, Convolution2D, MaxPooling2D, AveragePooling2D, ZeroPadding2D, Dropout, Flatten, merge, Reshape, Activation
+from keras.layers import Input, Dense, Convolution2D, MaxPooling2D, AveragePooling2D, ZeroPadding2D, Dropout, Flatten, merge, Reshape, Activation, Dropout
 from keras.layers.normalization import BatchNormalization
 from keras.models import Model
 from keras import backend as K
@@ -10,8 +10,6 @@ from keras import backend as K
 from sklearn.metrics import log_loss
 
 from custom_layers.scale_layer import Scale
-
-from load_cifar10 import load_cifar10_data
 
 import sys
 sys.setrecursionlimit(3000)
@@ -155,7 +153,7 @@ def resnet101_model(img_rows, img_cols, color_type=1, num_classes=None):
       weights_path = 'imagenet_models/resnet101_weights_th.h5'
     else:
       # Use pre-trained weights for Tensorflow backend
-      weights_path = 'imagenet_models/resnet101_weights_tf.h5'
+      weights_path = 'flyyufelix_models/imagenet_models/resnet101_weights_tf.h5'
 
     model.load_weights(weights_path, by_name=True)
 
@@ -164,6 +162,8 @@ def resnet101_model(img_rows, img_cols, color_type=1, num_classes=None):
     # The method below works since pre-trained weights are stored in layers but not in the model
     x_newfc = AveragePooling2D((7, 7), name='avg_pool')(x)
     x_newfc = Flatten()(x_newfc)
+    x_newfc = Dense(1024, activation='relu', name='fc1')(x_newfc)
+    x_newfc = Dense(1024, activation='relu', name='fc2')(x_newfc)
     x_newfc = Dense(num_classes, activation='softmax', name='fc8')(x_newfc)
 
     model = Model(img_input, x_newfc)
